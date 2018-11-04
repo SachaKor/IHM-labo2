@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>520</width>
-    <height>583</height>
+    <height>622</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -115,7 +115,7 @@
       <x>10</x>
       <y>270</y>
       <width>500</width>
-      <height>161</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="title">
@@ -196,7 +196,7 @@
     <widget class="QLineEdit" name="stopTime">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>350</x>
        <y>120</y>
        <width>113</width>
        <height>24</height>
@@ -219,7 +219,7 @@
     <widget class="QLabel" name="label_6">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>280</x>
        <y>120</y>
        <width>60</width>
        <height>21</height>
@@ -229,12 +229,25 @@
       <string>Stop time</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="outputOpenButton_2">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>160</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Trim</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="commandLineGroupBox">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>440</y>
+      <y>480</y>
       <width>500</width>
       <height>91</height>
      </rect>
@@ -245,7 +258,7 @@
     <widget class="QTextEdit" name="commandLine">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>30</y>
        <width>471</width>
        <height>51</height>
