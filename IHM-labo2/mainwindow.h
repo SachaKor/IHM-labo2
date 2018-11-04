@@ -37,6 +37,7 @@ private:
     void openFile();
     void setOutputFileComponentsEnabled(bool enabled);
     void linkFileNameToPath(QLineEdit *path, QLineEdit *filename);
+    void setMacEnvironment();
 
     // ui components
     QLineEdit *inputPath;

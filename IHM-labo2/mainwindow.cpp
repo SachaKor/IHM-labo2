@@ -62,23 +62,29 @@ void MainWindow::openFile() {
     inputName->setEnabled(true);
     QString commandStr = "ffprobe";
     QStringList params;
-    params << "-c" << "-i" << inputPath->text();
-//    QProcess ffprobe;
-//    ffprobe.start(commandStr, params);
-//    ffprobe.waitForFinished(-1);
-//    QString out = ffprobe.readAllStandardOutput();
-//    QString err = ffprobe.readAllStandardError();
-//    vidProps->setText(out);
-//    QString fullCommand = commandStr + " ";
-//    for(QString param : params) {
-//        fullCommand += param + " ";
-//    }
-//    commandLine->append("> " + fullCommand);
-    QProcess sh;
-    sh.start("ls", QStringList() << "-c" << "-a");
-    sh.waitForFinished(-1);
-    QString out = sh.readAllStandardOutput();
+    params << "-version";
+#ifdef __APPLE__
+    setMacEnvironment();
+#endif
+    QProcess ffprobe;
+    ffprobe.start(commandStr, params);
+    ffprobe.waitForFinished(-1);
+    QString out = ffprobe.readAllStandardOutput();
+    QString err = ffprobe.readAllStandardError();
     vidProps->setText(out);
+
+    QString fullCommand = commandStr + " ";
+    for(QString param : params) {
+        fullCommand += param + " ";
+    }
+    commandLine->append("> " + fullCommand);
+
+//    commandLine->append("> " + fullCommand);
+//    QProcess sh;
+//    sh.start("ls", QStringList() << "-c" << "-a");
+//    sh.waitForFinished(-1);
+//    QString out = sh.readAllStandardOutput();
+//    vidProps->setText(out);
 
 }
 
@@ -120,4 +126,29 @@ void MainWindow::on_outputFilePath_textEdited(const QString &arg1)
 void MainWindow::on_outputFileName_textEdited(const QString &arg1)
 {
     linkFileNameToPath(outputPath, outputName);
+}
+
+void MainWindow::setMacEnvironment() {
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    QStringList envlist = env.toStringList();
+
+    for(int i=0; i < envlist.size(); i++)
+    {
+        QString entry = envlist[i];
+
+        if(entry.startsWith("PATH="))
+        {
+            int index = entry.indexOf("=");
+
+            if(index != -1)
+            {
+                QString value = entry.right(entry.length() - (index+1));
+                value += ":/usr/texbin:/usr/local/bin";
+
+                setenv("PATH", value.toLatin1().constData(), true);
+            }
+
+            break;
+        }
+    }
 }
