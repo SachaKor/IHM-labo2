@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/imgs">
+        <file>baseline-exit_to_app-24px.svg</file>
+        <file>baseline-save-24px.svg</file>
+        <file>baseline-folder_open-24px.svg</file>
+    </qresource>
+</RCC>
