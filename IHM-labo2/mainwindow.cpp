@@ -60,20 +60,24 @@ void MainWindow::openFile() {
     inputName->setText(fileInfo.fileName());
     setOutputFileComponentsEnabled(true);
     inputName->setEnabled(true);
-    QString commandStr = "ffprobe";
-    QStringList params;
-    params << "-c" << "-i" << inputPath->text();
-    QProcess ffprobe;
-    ffprobe.start(commandStr, params);
-    QString stdout = ffprobe.readAllStandardOutput();
-    QString stderr = ffprobe.readAllStandardError();
-    vidProps->setText(stdout);
-    ffprobe.waitForFinished(-1);
-    QString fullCommand = commandStr + " ";
-    for(QString param : params) {
-        fullCommand += param + " ";
-    }
-    commandLine->append("> " + fullCommand);
+//    QString commandStr = "ffprobe";
+//    QStringList params;
+//    params << "-c" << "-i" << inputPath->text();
+//    QProcess ffprobe;
+//    ffprobe.start(commandStr, params);
+//    QString stdout = ffprobe.readAllStandardOutput();
+//    QString stderr = ffprobe.readAllStandardError();
+//    vidProps->setText(stdout);
+//    ffprobe.waitForFinished(-1);
+//    QString fullCommand = commandStr + " ";
+//    for(QString param : params) {
+//        fullCommand += param + " ";
+//    }
+//    commandLine->append("> " + fullCommand);
+    QProcess ls;
+    ls.start("ls", QStringList() << "-c" << "-a");
+    vidProps->setText(ls.readAllStandardOutput());
+    ls.waitForFinished(-1);
 
 }
 
