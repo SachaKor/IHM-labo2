@@ -1,5 +1,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProcess>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -19,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     startTime = ui->outputGroupBox->findChild<QLineEdit *>("startTime");
     stopTime = ui->outputGroupBox->findChild<QLineEdit *>("stopTime");
     commandLine = ui->commandLineGroupBox->findChild<QTextEdit *>("commandLine");
+    vidProps = ui->commandLineGroupBox->findChild<QTextEdit *>("vidProps");
     commandLine->setReadOnly(true);
 
     inputName->setEnabled(false);
@@ -58,6 +60,16 @@ void MainWindow::openFile() {
     inputName->setText(fileInfo.fileName());
     setOutputFileComponentsEnabled(true);
     inputName->setEnabled(true);
+    QString ffprobe = "ls";
+    QStringList params;
+    params << "-a";
+    QProcess *process = new QProcess(this);
+    process->start(ffprobe, params);
+    process->waitForFinished();
+    QString stdout = process->readAllStandardOutput();
+    QString stderr = process->readAllStandardError();
+    vidProps->setText(stdout);
+    delete process;
 }
 
 void MainWindow::on_inputOpenButton_clicked()

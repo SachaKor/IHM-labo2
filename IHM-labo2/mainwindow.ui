@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>511</width>
+    <width>653</width>
     <height>472</height>
    </rect>
   </property>
@@ -233,13 +233,23 @@
      </property>
     </widget>
    </widget>
+   <widget class="QTextEdit" name="vidProps">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>30</y>
+      <width>131</width>
+      <height>111</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>511</width>
+     <width>653</width>
      <height>22</height>
     </rect>
    </property>

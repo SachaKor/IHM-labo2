@@ -47,6 +47,7 @@ private:
     QLineEdit *startTime;
     QLineEdit *stopTime;
     QTextEdit *commandLine;
+    QTextEdit *vidProps;
 
 };
 
