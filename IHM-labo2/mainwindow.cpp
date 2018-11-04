@@ -62,7 +62,7 @@ void MainWindow::openFile() {
     inputName->setEnabled(true);
     QString commandStr = "ffprobe";
     QStringList params;
-    params << "-version";
+    params << "-i" << inputPath->text() << "-show_format" << "-hide_banner";
 #ifdef __APPLE__
     setMacEnvironment();
 #endif
