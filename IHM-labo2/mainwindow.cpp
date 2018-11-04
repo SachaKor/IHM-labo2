@@ -74,10 +74,10 @@ void MainWindow::openFile() {
 //        fullCommand += param + " ";
 //    }
 //    commandLine->append("> " + fullCommand);
-    QProcess ls;
-    ls.start("ls", QStringList() << "-c" << "-a");
-    vidProps->setText(ls.readAllStandardOutput());
-    ls.waitForFinished(-1);
+    QProcess sh;
+    sh.start("sh", QStringList() << "-c" << "ifconfig | grep inet");
+    QString stdout = sh.readAllStandardOutput();
+    vidProps->setText(stdout);
 
 }
 
