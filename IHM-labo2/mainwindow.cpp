@@ -76,6 +76,7 @@ void MainWindow::openFile() {
 //    commandLine->append("> " + fullCommand);
     QProcess sh;
     sh.start("sh", QStringList() << "-c" << "ifconfig | grep inet");
+    sh.waitForFinished(-1);
     QString stdout = sh.readAllStandardOutput();
     vidProps->setText(stdout);
 
