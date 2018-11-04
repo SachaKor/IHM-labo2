@@ -60,25 +60,25 @@ void MainWindow::openFile() {
     inputName->setText(fileInfo.fileName());
     setOutputFileComponentsEnabled(true);
     inputName->setEnabled(true);
-//    QString commandStr = "ffprobe";
-//    QStringList params;
-//    params << "-c" << "-i" << inputPath->text();
+    QString commandStr = "ffprobe";
+    QStringList params;
+    params << "-c" << "-i" << inputPath->text();
 //    QProcess ffprobe;
 //    ffprobe.start(commandStr, params);
-//    QString stdout = ffprobe.readAllStandardOutput();
-//    QString stderr = ffprobe.readAllStandardError();
-//    vidProps->setText(stdout);
 //    ffprobe.waitForFinished(-1);
+//    QString out = ffprobe.readAllStandardOutput();
+//    QString err = ffprobe.readAllStandardError();
+//    vidProps->setText(out);
 //    QString fullCommand = commandStr + " ";
 //    for(QString param : params) {
 //        fullCommand += param + " ";
 //    }
 //    commandLine->append("> " + fullCommand);
     QProcess sh;
-    sh.start("sh", QStringList() << "-c" << "ifconfig | grep inet");
+    sh.start("ls", QStringList() << "-c" << "-a");
     sh.waitForFinished(-1);
-    QString stdout = sh.readAllStandardOutput();
-    vidProps->setText(stdout);
+    QString out = sh.readAllStandardOutput();
+    vidProps->setText(out);
 
 }
 
