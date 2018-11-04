@@ -18,13 +18,21 @@ MainWindow::MainWindow(QWidget *parent) :
     outputOpenButton = ui->outputGroupBox->findChild<QPushButton *>("outputOpenButton");
     startTime = ui->outputGroupBox->findChild<QLineEdit *>("startTime");
     stopTime = ui->outputGroupBox->findChild<QLineEdit *>("stopTime");
+    commandLine = ui->commandLineGroupBox->findChild<QTextEdit *>("commandLine");
+    commandLine->setReadOnly(true);
+
+    inputName->setEnabled(false);
 
     // disable all outputGroupBox clickable components
-    outputPath->setDisabled(true);
-    outputName->setDisabled(true);
-    outputOpenButton->setDisabled(true);
-    startTime->setDisabled(true);
-    stopTime->setDisabled(true);
+    setOutputFileComponentsEnabled(false);
+}
+
+void MainWindow::setOutputFileComponentsEnabled(bool enabled) {
+    outputPath->setEnabled(enabled);
+    outputName->setEnabled(enabled);
+    outputOpenButton->setEnabled(enabled);
+    startTime->setEnabled(enabled);
+    stopTime->setEnabled(enabled);
 }
 
 MainWindow::~MainWindow()
@@ -48,9 +56,46 @@ void MainWindow::openFile() {
     inputPath->setText(filename);
     QFileInfo fileInfo(file.fileName());
     inputName->setText(fileInfo.fileName());
+    setOutputFileComponentsEnabled(true);
+    inputName->setEnabled(true);
 }
 
 void MainWindow::on_inputOpenButton_clicked()
 {
     openFile();
+}
+
+void MainWindow::on_inputFilePath_textChanged(const QString &arg1)
+{
+    QFile file(arg1);
+    QFileInfo fileInfo(file.fileName());
+    inputName->setText(fileInfo.fileName());
+}
+
+void MainWindow::on_inputFileName_textChanged(const QString &arg1)
+{
+    linkFileNameToPath(inputPath, inputName);
+}
+
+void MainWindow::linkFileNameToPath(QLineEdit *path, QLineEdit *filename) {
+    QStringList pathVector = path->text().split("/");
+    pathVector.pop_back();
+    QString folderPath = "";
+    for(auto i = pathVector.begin(); i != pathVector.end(); i++) {
+        folderPath += *i;
+        folderPath += "/";
+    }
+    path->setText(folderPath + filename->text());
+}
+
+void MainWindow::on_outputFilePath_textEdited(const QString &arg1)
+{
+    QFile file(arg1);
+    QFileInfo fileInfo(file.fileName());
+    outputName->setText(fileInfo.fileName());
+}
+
+void MainWindow::on_outputFileName_textEdited(const QString &arg1)
+{
+    linkFileNameToPath(outputPath, outputName);
 }

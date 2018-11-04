@@ -107,6 +107,9 @@
        <height>24</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>Select the input video</string>
+     </property>
     </widget>
     <widget class="QPushButton" name="outputOpenButton">
      <property name="geometry">
@@ -204,7 +207,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_3">
+   <widget class="QGroupBox" name="commandLineGroupBox">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -216,7 +219,7 @@
     <property name="title">
      <string>Command line</string>
     </property>
-    <widget class="QTextEdit" name="textEdit">
+    <widget class="QTextEdit" name="commandLine">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -224,6 +227,9 @@
        <width>471</width>
        <height>51</height>
       </rect>
+     </property>
+     <property name="acceptRichText">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -281,7 +287,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>Exit</string>
+    <string>Close</string>
    </property>
    <property name="shortcut">
     <string>Meta+Q</string>
