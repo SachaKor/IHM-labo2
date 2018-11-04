@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     startTime = ui->outputGroupBox->findChild<QLineEdit *>("startTime");
     stopTime = ui->outputGroupBox->findChild<QLineEdit *>("stopTime");
     commandLine = ui->commandLineGroupBox->findChild<QTextEdit *>("commandLine");
-    vidProps = ui->commandLineGroupBox->findChild<QTextEdit *>("vidProps");
+    vidProps = ui->inputGroupBox->findChild<QTextEdit *>("vidProps");
     commandLine->setReadOnly(true);
 
     inputName->setEnabled(false);
@@ -60,16 +60,16 @@ void MainWindow::openFile() {
     inputName->setText(fileInfo.fileName());
     setOutputFileComponentsEnabled(true);
     inputName->setEnabled(true);
-    QString ffprobe = "ls";
-    QStringList params;
-    params << "-a";
-    QProcess *process = new QProcess(this);
-    process->start(ffprobe, params);
-    process->waitForFinished();
-    QString stdout = process->readAllStandardOutput();
-    QString stderr = process->readAllStandardError();
+    QProcess ffprobe;
+    ffprobe.start("ffprobe", QStringList() << "-c" << "-i" << inputPath->text()
+             << "-show_format" << "-hide_banner");
+    QString stdout = ffprobe.readAllStandardOutput();
+    QString stderr = ffprobe.readAllStandardError();
+    if(stdout.isEmpty()) {
+        vidProps->setText("empty");
+    }
     vidProps->setText(stdout);
-    delete process;
+    ffprobe.waitForFinished(-1);
 }
 
 void MainWindow::on_inputOpenButton_clicked()
