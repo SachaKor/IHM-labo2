@@ -70,7 +70,7 @@ void MainWindow::openFile() {
     vidProps->setText(stdout);
     ffprobe.waitForFinished(-1);
     QString fullCommand = commandStr + " ";
-    for(auto param : params) {
+    for(QString param : params) {
         fullCommand += param + " ";
     }
     commandLine->append("> " + fullCommand);
@@ -98,8 +98,8 @@ void MainWindow::linkFileNameToPath(QLineEdit *path, QLineEdit *filename) {
     QStringList pathVector = path->text().split("/");
     pathVector.pop_back();
     QString folderPath = "";
-    for(auto i = pathVector.begin(); i != pathVector.end(); i++) {
-        folderPath += *i;
+    for(QString p : pathVector) {
+        folderPath += p;
         folderPath += "/";
     }
     path->setText(folderPath + filename->text());
