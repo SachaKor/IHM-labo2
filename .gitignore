@@ -39,6 +39,9 @@ ui_*.h
 wrapper.bat
 wrapper.sh
 
+#videos
+*.mp4
+
 # qtcreator generated files
 *.creator.user*
 *.pro.user*
