@@ -190,20 +190,7 @@ void MainWindow::on_trimButton_clicked()
         }
     }
 
-    if(initialFileNameChanged) {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Rename", "The input file name "
-                                      + inputName->text()
-                                      + " was changed.\n"
-                                      + "Rename?",
-                                      QMessageBox::Yes|QMessageBox::No);
-        if (reply == QMessageBox::Yes) {
-            QFile file(initialInputFilename);
-            file.rename(inputPath->text());
-        } else {
-            inputPath->setText(initialInputFilename);
-        }
-    }
+    renameInputFile();
 
     double sTime = startTime->text().toDouble();
     double eTime = stopTime->text().toDouble();
@@ -239,9 +226,28 @@ bool MainWindow::startAndStopTimesOk() {
     double start = startTime->text().toDouble();
     double stop = stopTime->text().toDouble();
 
-    if(start < 0 || stop < 0 || start >= stop || stop > durationValue) {
+    if(start < 0 || stop < 0 || start >= stop
+            || (stop > startTimeValue + durationValue)
+            || (start > startTimeValue + durationValue)) {
         return false;
     }
 
     return true;
+}
+
+void MainWindow::renameInputFile() {
+    if(initialFileNameChanged) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Rename", "The input file name "
+                                      + inputName->text()
+                                      + " was changed.\n"
+                                      + "Rename?",
+                                      QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            QFile file(initialInputFilename);
+            file.rename(inputPath->text());
+        } else {
+            inputPath->setText(initialInputFilename);
+        }
+    }
 }

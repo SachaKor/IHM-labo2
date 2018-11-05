@@ -45,6 +45,7 @@ private:
     void linkFileNameToPath(QLineEdit *path, QLineEdit *filename);
     void displayCommand(const QString& command, const QStringList& params);
     bool startAndStopTimesOk();
+    void renameInputFile();
 
     // constants
     const QString NA = "N/A";
