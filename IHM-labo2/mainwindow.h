@@ -45,6 +45,14 @@ private:
     void linkFileNameToPath(QLineEdit *path, QLineEdit *filename);
     void displayCommand(const QString& command, const QStringList& params);
 
+    // constants
+    const QString NA = "N/A";
+    const QString DURATION = "duration";
+    const QString START_TIME = "start_time";
+
+    // checks
+    bool validInputVideoFile = false;
+
     // ui components
     QLineEdit *inputPath;
     QLineEdit *inputName;

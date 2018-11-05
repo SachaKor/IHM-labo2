@@ -1,6 +1,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
+#include <QMap>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -60,11 +62,11 @@ void MainWindow::openFile() {
         QMessageBox::warning(this, "Warning", "Cannot open file: " + file.errorString());
         return;
     }
+
+    // set the input path and filename text fields
     inputPath->setText(filename);
     QFileInfo fileInfo(file.fileName());
     inputName->setText(fileInfo.fileName());
-    setOutputFileComponentsEnabled(true);
-    inputName->setEnabled(true);
 
     QString commandStr = "ffprobe";
     QStringList params;
@@ -74,17 +76,42 @@ void MainWindow::openFile() {
     ffprobe.waitForFinished(-1);
     QString out = ffprobe.readAllStandardOutput();
     QString err = ffprobe.readAllStandardError();
-    vidProps->setText(out);
 
-    // display command in the command line
-    displayCommand(commandStr, params);
+    QMap<QString, QString> mappedProps = Utils::mapProperties(out);
+    QString parsedOptions;
+    for(auto key : mappedProps.keys()) {
+        parsedOptions += key + " = " + mappedProps.value(key) + "\n";
+    }
+    vidProps->setText(parsedOptions);
 
-    // set the default output video file name
-    QString folderName = Utils::getFolderName(inputPath->text());
-    outputPath->setText(folderName + "untitled" + "."
-                        + Utils::getFileFormat(filename));
+    double durationValue = -1;
+    double startTimeValue = -1;
+    QString durationProp = mappedProps.value(DURATION);
 
+    if(durationProp == NA) {
+        QMessageBox::warning(this, "warning", "Video file is not valid");
+    } else {
+        validInputVideoFile = true;
+        durationValue = durationProp.toDouble();
+        startTimeValue = mappedProps.value(START_TIME).toDouble();
+    }
 
+    if(validInputVideoFile) {
+        setOutputFileComponentsEnabled(true);
+        inputName->setEnabled(true);
+
+        // display command in the command line
+        displayCommand(commandStr, params);
+
+        // set the default output video file name
+        QString folderName = Utils::getFolderName(inputPath->text());
+        outputPath->setText(folderName + "untitled" + "."
+                            + Utils::getFileFormat(filename));
+
+        // set start and stop time default values
+        startTime->setText(QString::number(startTimeValue));
+        stopTime->setText(QString::number(startTimeValue+durationValue));
+    }
 }
 
 

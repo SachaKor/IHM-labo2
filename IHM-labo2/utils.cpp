@@ -1,4 +1,5 @@
 #include <QProcessEnvironment>
+#include <QMap>
 
 #include "utils.h"
 
@@ -48,4 +49,27 @@ QString Utils::getFileFormat(const QString &filename) {
     }
 
     return filename.mid(indexOfLastDot+1, filename.size()-indexOfLastDot-1);
+}
+
+QMap<QString, QString> Utils::mapProperties(const QString& props) {
+    QMap<QString, QString> map;
+    int formatOptions = props.indexOf("[FORMAT]");
+    int endFormatOptions = props.indexOf("[/FORMAT]");
+
+    if(formatOptions == -1 || endFormatOptions == -1) {
+        return map;
+    }
+
+    QString formatProperties = props.mid(formatOptions,
+                                         endFormatOptions-formatOptions);
+    formatProperties.replace("[FORMAT]", "");
+    QStringList optionsList = formatProperties.split("\n");
+    for(QString op : optionsList) {
+        QStringList keyValue = op.split("=");
+        if(keyValue.size() == 2) {
+            map.insert(keyValue.at(0), keyValue.at(1));
+        }
+    }
+
+    return map;
 }
