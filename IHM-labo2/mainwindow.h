@@ -55,8 +55,12 @@ private:
     double durationValue = -1;
     double startTimeValue = -1;
 
+    // file properties
+    QString initialInputFilename = "";
+
     // checks
     bool validInputVideoFile = false;
+    bool initialFileNameChanged = false;
 
     // ui components
     QLineEdit *inputPath;

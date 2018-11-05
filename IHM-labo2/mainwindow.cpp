@@ -64,6 +64,8 @@ void MainWindow::openFile() {
         return;
     }
 
+    initialInputFilename = filename;
+
     // set the input path and filename text fields
     inputPath->setText(filename);
     QFileInfo fileInfo(file.fileName());
@@ -128,6 +130,9 @@ void MainWindow::on_inputFilePath_textChanged(const QString &arg1)
     QFile file(arg1);
     QFileInfo fileInfo(file.fileName());
     inputName->setText(fileInfo.fileName());
+    if(initialInputFilename != inputPath->text()) {
+        initialFileNameChanged = true;
+    }
 }
 
 void MainWindow::on_inputFileName_textChanged(const QString &arg1)
@@ -172,7 +177,7 @@ void MainWindow::on_trimButton_clicked()
 
     if(Utils::fileExists(outputPath->text())) {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Test", "The file with name "
+        reply = QMessageBox::question(this, "Overwrite", "The file with name "
                                       + outputName->text()
                                       + " already exists.\n"
                                       + "Overwrite?",
@@ -182,6 +187,21 @@ void MainWindow::on_trimButton_clicked()
             file.remove();
         } else {
           return;
+        }
+    }
+
+    if(initialFileNameChanged) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Rename", "The input file name "
+                                      + inputName->text()
+                                      + " was changed.\n"
+                                      + "Rename?",
+                                      QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            QFile file(initialInputFilename);
+            file.rename(inputPath->text());
+        } else {
+            inputPath->setText(initialInputFilename);
         }
     }
 
