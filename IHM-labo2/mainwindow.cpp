@@ -4,11 +4,15 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "utils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+#ifdef __APPLE__
+    Utils::setMacEnvironment();
+#endif
     ui->setupUi(this);
     this->setWindowTitle("Ffmpeg");
     // set the ui components
@@ -21,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     stopTime = ui->outputGroupBox->findChild<QLineEdit *>("stopTime");
     commandLine = ui->commandLineGroupBox->findChild<QTextEdit *>("commandLine");
     vidProps = ui->inputGroupBox->findChild<QTextEdit *>("vidProps");
+
     commandLine->setReadOnly(true);
 
     inputName->setEnabled(false);
@@ -53,19 +58,17 @@ void MainWindow::openFile() {
     currentFile = filename;
     if(!file.open(QIODevice::ReadOnly)) {
         QMessageBox::warning(this, "Warning", "Cannot open file: " + file.errorString());
+        return;
     }
-    setWindowTitle(filename);
     inputPath->setText(filename);
     QFileInfo fileInfo(file.fileName());
     inputName->setText(fileInfo.fileName());
     setOutputFileComponentsEnabled(true);
     inputName->setEnabled(true);
+
     QString commandStr = "ffprobe";
     QStringList params;
     params << "-i" << inputPath->text() << "-show_format" << "-hide_banner";
-#ifdef __APPLE__
-    setMacEnvironment();
-#endif
     QProcess ffprobe;
     ffprobe.start(commandStr, params);
     ffprobe.waitForFinished(-1);
@@ -73,20 +76,17 @@ void MainWindow::openFile() {
     QString err = ffprobe.readAllStandardError();
     vidProps->setText(out);
 
-    QString fullCommand = commandStr + " ";
-    for(QString param : params) {
-        fullCommand += param + " ";
-    }
-    commandLine->append("> " + fullCommand);
+    // display command in the command line
+    displayCommand(commandStr, params);
 
-//    commandLine->append("> " + fullCommand);
-//    QProcess sh;
-//    sh.start("ls", QStringList() << "-c" << "-a");
-//    sh.waitForFinished(-1);
-//    QString out = sh.readAllStandardOutput();
-//    vidProps->setText(out);
+    // set the default output video file name
+    QString folderName = Utils::getFolderName(inputPath->text());
+    outputPath->setText(folderName + "untitled" + "."
+                        + Utils::getFileFormat(filename));
+
 
 }
+
 
 void MainWindow::on_inputOpenButton_clicked()
 {
@@ -106,14 +106,7 @@ void MainWindow::on_inputFileName_textChanged(const QString &arg1)
 }
 
 void MainWindow::linkFileNameToPath(QLineEdit *path, QLineEdit *filename) {
-    QStringList pathVector = path->text().split("/");
-    pathVector.pop_back();
-    QString folderPath = "";
-    for(QString p : pathVector) {
-        folderPath += p;
-        folderPath += "/";
-    }
-    path->setText(folderPath + filename->text());
+    path->setText(Utils::getFolderName(path->text()) + filename->text());
 }
 
 void MainWindow::on_outputFilePath_textEdited(const QString &arg1)
@@ -128,27 +121,48 @@ void MainWindow::on_outputFileName_textEdited(const QString &arg1)
     linkFileNameToPath(outputPath, outputName);
 }
 
-void MainWindow::setMacEnvironment() {
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QStringList envlist = env.toStringList();
+void MainWindow::on_actionExit_triggered()
+{
+    QApplication::quit();
+}
 
-    for(int i=0; i < envlist.size(); i++)
-    {
-        QString entry = envlist[i];
+void MainWindow::on_outputFilePath_textChanged(const QString &arg1)
+{
+    QFile file(arg1);
+    QFileInfo fileInfo(file.fileName());
+    outputName->setText(fileInfo.fileName());
+}
 
-        if(entry.startsWith("PATH="))
-        {
-            int index = entry.indexOf("=");
+void MainWindow::on_trimButton_clicked()
+{
+    int sTime = startTime->text().toInt();
+    int eTime = stopTime->text().toInt();
 
-            if(index != -1)
-            {
-                QString value = entry.right(entry.length() - (index+1));
-                value += ":/usr/texbin:/usr/local/bin";
+    //TODO: check the start and stop time
 
-                setenv("PATH", value.toLatin1().constData(), true);
-            }
+    QString commandStr = "ffmpeg";
+    QProcess ffmpeg;
+    QStringList params;
 
-            break;
-        }
+    params << "-ss" << startTime->text() << "-i"  << inputPath->text() << "-c"
+           << "copy"<< "-t" << QString::number(eTime-sTime)
+           << outputPath->text();
+
+    ffmpeg.start(commandStr, params);
+    ffmpeg.waitForFinished(-1);
+    QString out = ffmpeg.readAllStandardOutput();
+    QString err = ffmpeg.readAllStandardError();
+
+    displayCommand(commandStr, params);
+}
+
+void MainWindow::displayCommand(const QString& command, const QStringList& params) {
+    QString fullCommand = command + " ";
+    for(QString param : params) {
+        fullCommand += param + " ";
     }
+    commandLine->append("> " + fullCommand);
+
+    // set the default output video file name
+    QString folderName = Utils::getFolderName(inputPath->text());
 }

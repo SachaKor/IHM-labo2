@@ -31,13 +31,19 @@ private slots:
 
     void on_outputFileName_textEdited(const QString &arg1);
 
+    void on_actionExit_triggered();
+
+    void on_outputFilePath_textChanged(const QString &arg1);
+
+    void on_trimButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString currentFile = "";
     void openFile();
     void setOutputFileComponentsEnabled(bool enabled);
     void linkFileNameToPath(QLineEdit *path, QLineEdit *filename);
-    void setMacEnvironment();
+    void displayCommand(const QString& command, const QStringList& params);
 
     // ui components
     QLineEdit *inputPath;

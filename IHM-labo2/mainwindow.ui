@@ -115,7 +115,7 @@
       <x>10</x>
       <y>270</y>
       <width>500</width>
-      <height>201</height>
+      <height>191</height>
      </rect>
     </property>
     <property name="title">
@@ -196,7 +196,7 @@
     <widget class="QLineEdit" name="stopTime">
      <property name="geometry">
       <rect>
-       <x>350</x>
+       <x>290</x>
        <y>120</y>
        <width>113</width>
        <height>24</height>
@@ -219,7 +219,7 @@
     <widget class="QLabel" name="label_6">
      <property name="geometry">
       <rect>
-       <x>280</x>
+       <x>220</x>
        <y>120</y>
        <width>60</width>
        <height>21</height>
@@ -229,13 +229,13 @@
       <string>Stop time</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="outputOpenButton_2">
+    <widget class="QPushButton" name="trimButton">
      <property name="geometry">
       <rect>
        <x>170</x>
        <y>160</y>
        <width>121</width>
-       <height>31</height>
+       <height>24</height>
       </rect>
      </property>
      <property name="text">
@@ -285,7 +285,6 @@
     </property>
     <addaction name="separator"/>
     <addaction name="actionOpen"/>
-    <addaction name="actionSave"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuFile"/>
@@ -301,19 +300,6 @@
    </property>
    <property name="shortcut">
     <string>Meta+O</string>
-   </property>
-  </action>
-  <action name="actionSave">
-   <property name="icon">
-    <iconset>
-     <disabledoff>:/imgs/baseline-save-24px.svg</disabledoff>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>Save</string>
-   </property>
-   <property name="shortcut">
-    <string>Meta+S</string>
    </property>
   </action>
   <action name="actionExit">
