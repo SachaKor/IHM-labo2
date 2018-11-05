@@ -44,11 +44,16 @@ private:
     void setOutputFileComponentsEnabled(bool enabled);
     void linkFileNameToPath(QLineEdit *path, QLineEdit *filename);
     void displayCommand(const QString& command, const QStringList& params);
+    bool startAndStopTimesOk();
 
     // constants
     const QString NA = "N/A";
     const QString DURATION = "duration";
     const QString START_TIME = "start_time";
+
+    // video properties
+    double durationValue = -1;
+    double startTimeValue = -1;
 
     // checks
     bool validInputVideoFile = false;

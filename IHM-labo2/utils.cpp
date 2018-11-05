@@ -1,5 +1,6 @@
 #include <QProcessEnvironment>
 #include <QMap>
+#include <QFileInfo>
 
 #include "utils.h"
 
@@ -72,4 +73,14 @@ QMap<QString, QString> Utils::mapProperties(const QString& props) {
     }
 
     return map;
+}
+
+bool Utils::fileExists(const QString& path) {
+    QFile file(path);
+    QFileInfo fileInfo(file.fileName());
+    if (fileInfo.exists() && fileInfo.isFile()) {
+        return true;
+    } else {
+        return false;
+    }
 }

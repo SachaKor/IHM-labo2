@@ -3,6 +3,7 @@
 #include <QProcess>
 #include <QMap>
 #include <QMessageBox>
+#include <QDoubleValidator>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -84,8 +85,6 @@ void MainWindow::openFile() {
     }
     vidProps->setText(parsedOptions);
 
-    double durationValue = -1;
-    double startTimeValue = -1;
     QString durationProp = mappedProps.value(DURATION);
 
     if(durationProp == NA) {
@@ -111,6 +110,10 @@ void MainWindow::openFile() {
         // set start and stop time default values
         startTime->setText(QString::number(startTimeValue));
         stopTime->setText(QString::number(startTimeValue+durationValue));
+
+        // set double validators for start and stop times
+        startTime->setValidator(new QDoubleValidator(this));
+        stopTime->setValidator(new QDoubleValidator(this));
     }
 }
 
@@ -162,10 +165,28 @@ void MainWindow::on_outputFilePath_textChanged(const QString &arg1)
 
 void MainWindow::on_trimButton_clicked()
 {
-    int sTime = startTime->text().toInt();
-    int eTime = stopTime->text().toInt();
+    if(!startAndStopTimesOk()) {
+        QMessageBox::warning(this, "warning", "Invalid start or stop time");
+        return;
+    }
 
-    //TODO: check the start and stop time
+    if(Utils::fileExists(outputPath->text())) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Test", "The file with name "
+                                      + outputName->text()
+                                      + " already exists.\n"
+                                      + "Overwrite?",
+                                      QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            QFile file(outputPath->text());
+            file.remove();
+        } else {
+          return;
+        }
+    }
+
+    double sTime = startTime->text().toDouble();
+    double eTime = stopTime->text().toDouble();
 
     QString commandStr = "ffmpeg";
     QProcess ffmpeg;
@@ -192,4 +213,15 @@ void MainWindow::displayCommand(const QString& command, const QStringList& param
 
     // set the default output video file name
     QString folderName = Utils::getFolderName(inputPath->text());
+}
+
+bool MainWindow::startAndStopTimesOk() {
+    double start = startTime->text().toDouble();
+    double stop = stopTime->text().toDouble();
+
+    if(start < 0 || stop < 0 || start >= stop || stop > durationValue) {
+        return false;
+    }
+
+    return true;
 }
